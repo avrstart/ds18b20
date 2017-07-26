@@ -18,7 +18,7 @@ uint8_t ow_buf[8];
 static uint8_t LastDiscrepancy;       /*!< Search private */
 static uint8_t LastDeviceFlag;        /*!< Search private */
 static uint8_t DeviceID;
-
+static uint8_t ROM_NO[8];
 
 static void OW_toBits(uint8_t ow_byte, uint8_t *ow_bits) {
 	uint8_t i;
@@ -260,7 +260,6 @@ uint8_t OW_Search(owdevice_t *owdevices)
 	uint8_t last_zero = 0, rom_byte_number = 0, search_result = 0;
 	uint8_t id_bit, cmp_id_bit;
 	uint8_t rom_byte_mask = 1, search_direction;
-    uint8_t *ROM_NO;
     uint8_t cmd;
 
 	// if the last call was not the last one
@@ -274,8 +273,6 @@ uint8_t OW_Search(owdevice_t *owdevices)
 			return 0;
 		}
         
-        ROM_NO = owdevices[DeviceID].rom_code;
-
 		// loop to do the search
 		do {
 			// read a bit and its complement
@@ -343,6 +340,7 @@ uint8_t OW_Search(owdevice_t *owdevices)
 
 			search_result = 1;
             owdevices[DeviceID].id = DeviceID;
+            for (int i = 0; i < 8; i++) owdevices[DeviceID].rom_code[i] = ROM_NO[i];
             DeviceID++;
 		}
 	}
@@ -354,7 +352,7 @@ uint8_t OW_Search(owdevice_t *owdevices)
 		search_result = 0;
         DeviceID = 0;
 	}
-
+    
 	return search_result;
 }
 
